@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 def merge_sort(arr):
     if len(arr) <= 1:
         return arr
@@ -47,18 +46,4 @@ def merge(left, right):
 arr = [int(x) for x in input().split()]
 sorted_arr = merge_sort(arr)
 print(sorted_arr)
-=======
-import bisect
 
-n = int(input())
-line = list(map(int, input().split()))
-
-l2 = [line[-1]]
-answer = 0
-for elem in reversed(line[:-1]):
-    new_ind = bisect.bisect_left(l2, elem)
-    answer += new_ind
-    l2.insert(new_ind, elem)
-
-print(answer)
->>>>>>> origin/master
