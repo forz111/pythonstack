@@ -3,11 +3,13 @@ def read_file(file_name):
         data = file.read().replace('\n', '')
     return data
 
+
 def hash_function(text, table_size):
     hash_sum = 0
     for i in range(len(text)):
         hash_sum += ord(text[i]) * i
     return hash_sum % table_size
+
 
 def build_hash_table(text, table_size):
     hash_table = [[] for _ in range(table_size)]
@@ -28,10 +30,12 @@ def build_hash_table(text, table_size):
                 hash_table[hash_value].append(word)
     return hash_table
 
+
 def write_hash_table(hash_table, file_name):
     with open(file_name, 'w') as file:
         for row in hash_table:
             file.write(str(row) + '\n')
+
 
 if __name__ == "__main__":
     text = read_file("input13.txt")

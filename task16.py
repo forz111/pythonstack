@@ -4,6 +4,7 @@ class Node:
         self.right = None
         self.val = key
 
+
 def iterativePreorder(root):
     if root is None:
         return
@@ -25,13 +26,15 @@ def iterativePreorder(root):
 
     return traversal
 
+
 def createTree(tree_str):
     stack = []
     i = 0
     while i < len(tree_str):
         if tree_str[i] != '(' and tree_str[i] != ')' and tree_str[i] != ',' and tree_str[i] != ' ':
             j = i
-            while j < len(tree_str) and tree_str[j] != '(' and tree_str[j] != ')' and tree_str[j] != ',' and tree_str[j] != ' ':
+            while j < len(tree_str) and tree_str[j] != '(' and tree_str[j] != ')' and tree_str[j] != ',' and tree_str[
+                j] != ' ':
                 j += 1
             node = Node(int(tree_str[i:j]))
             if stack:
@@ -47,6 +50,7 @@ def createTree(tree_str):
         else:
             i += 1
     return stack[0] if stack else None
+
 
 tree_str = input("Введите бинарное дерево в формате линейно-скобочной записи: ")
 

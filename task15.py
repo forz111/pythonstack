@@ -23,6 +23,7 @@ def printPostorder(node):
     if node:
         printPostorder(node.left)
         printPostorder(node.right)
+
         print(node.val, end=" ")
 
 
