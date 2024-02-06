@@ -1,51 +1,66 @@
-from collections import defaultdict
+import queue
 
-# Класс для представления графа
-class Graph:
 
-    # Конструктор для инициализации графа
-    def __init__(self, vertices):
-        self.V = vertices  # количество вершин
-        self.graph = defaultdict(list)  # словарь, содержащий граф
+# Функция для чтения графа из файла
+def read_graph_from_file(file_name):
+    with open(file_name, 'r') as file:
+        graph = []
+        for line in file:
+            # Проверка, является ли строка числовой
+            if line.replace(' ', '').replace('\n', '').isdigit():
+                graph.append(list(map(int, line.split())))
+    return graph
 
-    # Функция для добавления ребра в граф
-    def addEdge(self, u, v):
-        self.graph[u].append(v)
 
-    # Функция для выполнения BFS из заданной вершины
-    def BFS(self, v, visited):
-        queue = []  # создаем очередь для BFS
-        queue.append(v)  # помещаем текущую вершину в очередь
-        visited[v] = True  # помечаем текущую вершину как посещенную
+# Функция для записи компонент связности в файл
+def write_components_to_file(file_name, components):
+    with open(file_name, 'w', encoding='utf-8') as file:
+        file.write(f'Количество компонент связности: {len(components)}\n')
+        for i, component in enumerate(components, 1):
+            file.write(f'Компонента связности {i}: {" ".join(map(str, component))}\n')
 
-        while queue:  # пока очередь не пуста
-            v = queue.pop(0)  # извлекаем вершину из очереди
-            print(v, end=" ")
 
-            # Получаем все смежные вершины текущей вершины v.
-            # Если смежная вершина не была посещена, то помечаем ее
-            # как посещенную и помещаем в очередь.
-            for i in self.graph[v]:
-                if visited[i] == False:
-                    queue.append(i)
-                    visited[i] = True
+# Функция для выполнения обхода в ширину (BFS) графа
+def bfs(graph, start_vertex):
+    n = len(graph)
+    visited = [False for _ in range(n)]
+    visited[start_vertex] = True
+    q = queue.Queue()
+    q.put(start_vertex)
 
-    # Функция для поиска всех компонент связности в графе
-    def connectedComponents(self):
-        visited = [False] * (self.V)  # помечаем все вершины как непосещенные
-        cc = []  # список для хранения компонент связности
-        for v in range(self.V):  # проходим по всем вершинам
-            if visited[v] == False:  # если вершина не была посещена
-                print("Component: ", end="")
-                self.BFS(v, visited)  # выполняем BFS
-                cc.append(v)  # добавляем вершину в список компонент связности
-                print("\n")
-        return cc
+    component = [start_vertex]
 
-# Создаем граф
-g = Graph(5)
-g.addEdge(1, 0)
-g.addEdge(2, 3)
-g.addEdge(3, 4)
-cc = g.connectedComponents()  # находим компоненты связности
-print("Number of connected components:", len(cc))  # выводим количество компонент связности
+    while not q.empty():
+        v = q.get()
+        for i in range(n):
+            if graph[v][i] and not visited[i]:
+                visited[i] = True
+                q.put(i)
+                component.append(i)
+
+    return component, visited
+
+
+# Функция для определения компонент связности в графе
+def find_components(graph):
+    n = len(graph)
+    visited = [False for _ in range(n)]
+    components = []
+
+    for v in range(n):
+        if not visited[v]:
+            component, visited = bfs(graph, v)
+            components.append(component)
+
+    return components
+
+
+# Главная функция
+def main():
+    graph = read_graph_from_file('graph.txt')
+    components = find_components(graph)
+    write_components_to_file('components.txt', components)
+
+
+# Вызов главной функции
+main()
