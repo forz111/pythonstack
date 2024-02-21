@@ -1,10 +1,12 @@
 import heapq
 
+
 def read_adj_matrix_from_file(file_name):
     with open(file_name, 'r') as file:
         num_vertices = int(file.readline().strip())
         adj_matrix = [[int(x) for x in line.strip().split()] for line in file.readlines()]
     return num_vertices, adj_matrix
+
 
 def create_graph_from_adj_matrix(num_vertices, adj_matrix):
     class Graph:
@@ -21,10 +23,12 @@ def create_graph_from_adj_matrix(num_vertices, adj_matrix):
 
     return Graph(num_vertices, adj_matrix)
 
+
 def write_mst_to_file(mst, file_name):
     with open(file_name, 'w') as file:
         for edge in mst:
             file.write(f"{edge[0]} {edge[1]}\n")
+
 
 def kruskal(graph):
     num_vertices = graph.num_vertices
@@ -51,7 +55,7 @@ def kruskal(graph):
 
     edges = []
     for i in range(num_vertices):
-        for j in range(i+1, num_vertices):
+        for j in range(i + 1, num_vertices):
             if graph.adj_matrix[i][j] == 1:
                 edges.append(((i, j), i, j))
 
@@ -65,8 +69,8 @@ def kruskal(graph):
 
     return mst
 
-if __name__ == '__main__':
-    num_vertices, adj_matrix = read_adj_matrix_from_file('graph.txt')
-    graph = create_graph_from_adj_matrix(num_vertices, adj_matrix)
-    mst = kruskal(graph)
-    write_mst_to_file(mst, 'mst.txt')
+
+num_vertices, adj_matrix = read_adj_matrix_from_file('graph.txt')
+graph = create_graph_from_adj_matrix(num_vertices, adj_matrix)
+mst = kruskal(graph)
+write_mst_to_file(mst, 'mst.txt')
