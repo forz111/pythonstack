@@ -1,36 +1,56 @@
-import heapq
+# Функция для чтения матрицы смежности из файла
+def read_adjacency_matrix(file_path):
+  with open(file_path, 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+    matrix = []
+    for line in lines:
+      row = [int(x) for x in line.split()]
+      matrix.append(row)
+  return matrix
 
+# Функция для нахождения вершины с минимальным ключом среди непосещенных
+def min_key(keys, visited):
+  min = float("inf") # Бесконечность
+  min_index = -1 # Индекс минимальной вершины
+  for v in range(len(keys)): # Для каждой вершины
+    if keys[v] < min and not visited[v]: # Если ключ меньше минимума и вершина не посещена
+      min = keys[v] # Обновляем минимум
+      min_index = v # Обновляем индекс
+  return min_index # Возвращаем индекс
 
-def prim(graph, start_node):
-    mst = []
-    visited = [False] * len(graph)
-    edges = [(0, start_node)]
-    while edges:
-        weight, node = heapq.heappop(edges)
-        if not visited[node]:
-            visited[node] = True
-            mst.append(node)
-            for edge, edge_weight in enumerate(graph[node]):
-                if not visited[edge]:
-                    heapq.heappush(edges, (edge_weight, edge))
-    return mst
+# Функция для реализации алгоритма Прима
+def prim(graph):
+  n = len(graph) # Количество вершин
+  parent = [None] * n # Массив для хранения родителей в остовном дереве
+  keys = [float("inf")] * n # Массив для хранения ключей (весов ребер)
+  visited = [False] * n # Массив для отметки посещенных вершин
+  keys[0] = 0 # Ключ первой вершины равен нулю
+  parent[0] = -1 # Первая вершина не имеет родителя
+  for i in range(n - 1): # Для каждой вершины кроме последней
+    u = min_key(keys, visited) # Находим вершину с минимальным ключом среди непосещенных
+    visited[u] = True # Помечаем ее как посещенную
+    for v in range(n): # Для каждой смежной вершины
+      if graph[u][v] > 0 and not visited[v] and graph[u][v] < keys[v]: # Если есть ребро и вершина не посещена и вес ребра меньше ключа
+        parent[v] = u # Обновляем родителя
+        keys[v] = graph[u][v] # Обновляем ключ
+  return parent # Возвращаем массив родителей
 
+# Функция для преобразования массива родителей в список кортежей из трех элементов: номера вершины, номера родителя и веса ребра
+def convert(parent, graph):
+  result = [] # Список для хранения кортежей
+  for v in range(1, len(parent)): # Для каждой вершины кроме первой
+    u = parent[v] # Номер родителя
+    w = graph[u][v] # Вес ребра
+    result.append((v + 1, u + 1, w)) # Добавляем кортеж в список (прибавляем единицу к номерам вершин для удобства)
+  return result # Возвращаем список
 
-def read_graph_from_file(filename):
-    with open(filename, 'r') as file:
-        graph = [[int(num) for num in line.split()] for line in file]
-    return graph
+# Пример использования функций read_adjacency_matrix, prim и convert
+file_path = "graph.txt" # Путь к файлу с матрицей смежности
 
+graph = read_adjacency_matrix(file_path) # Читаем матрицу смежности из файла
 
-def write_result_to_file(filename, result):
-    with open(filename, 'w') as file:
-        file.write(' '.join(map(str, result)))
+parent = prim(graph) # Находим минимальное остовное дерево
 
-
-def main():
-    graph = read_graph_from_file('graph.txt')
-    mst = prim(graph, 0)
-    write_result_to_file('output.txt', mst)
-
-
-main()
+result = convert(parent, graph) # Преобразуем массив р
+with open('output.txt', 'w', encoding='utf-8') as f:
+  f.write("Минимальное остовное дерево: " + str(result))
