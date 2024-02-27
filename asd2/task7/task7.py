@@ -53,4 +53,4 @@ parent = prim(graph) # Находим минимальное остовное д
 
 result = convert(parent, graph) # Преобразуем массив р
 with open('output.txt', 'w', encoding='utf-8') as f:
-  f.write("Минимальное остовное дерево: " + str(result))
+  f.write("Минимальное остовное дерево(вершина, родитель, вес ребра): " + str(result))
