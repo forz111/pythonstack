@@ -43,4 +43,3 @@ if __name__ == '__main__':
     n = len(weight);
     print("Количество необходимых ящиков: ",
           firstFit(weight, n, c));
-
